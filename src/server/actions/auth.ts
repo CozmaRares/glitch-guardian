@@ -5,20 +5,20 @@ import { lucia, validateRequest } from "../auth";
 import { redirect } from "next/navigation";
 
 export async function logout(): Promise<{ error: string | null }> {
-    const { session } = await validateRequest();
-    if (!session) {
-        return {
-            error: "Unauthorized",
-        };
-    }
+  const { session } = await validateRequest();
+  if (!session) {
+    return {
+      error: "Unauthorized",
+    };
+  }
 
-    await lucia.invalidateSession(session.id);
+  await lucia.invalidateSession(session.id);
 
-    const sessionCookie = lucia.createBlankSessionCookie();
-    cookies().set(
-        sessionCookie.name,
-        sessionCookie.value,
-        sessionCookie.attributes,
-    );
-    return redirect("/login");
+  const sessionCookie = lucia.createBlankSessionCookie();
+  cookies().set(
+    sessionCookie.name,
+    sessionCookie.value,
+    sessionCookie.attributes,
+  );
+  return redirect("/login");
 }

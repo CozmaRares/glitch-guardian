@@ -10,9 +10,7 @@ import * as pg from "drizzle-orm/pg-core";
  *
  * @see https://orm.drizzle.team/docs/goodies#multi-project-schema
  */
-export const createTable = pg.pgTableCreator(
-  (name) => `glitch-guardian_${name}`,
-);
+export const createTable = pg.pgTableCreator(name => `glitch-guardian_${name}`);
 
 export const posts = createTable(
   "post",
@@ -25,7 +23,7 @@ export const posts = createTable(
       .notNull(),
     updatedAt: pg.timestamp("updatedAt"),
   },
-  (example) => ({
+  example => ({
     nameIndex: pg.index("name_idx").on(example.name),
   }),
 );
