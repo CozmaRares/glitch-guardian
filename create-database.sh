@@ -1,7 +1,7 @@
 #!/bin/bash
 # Use this script to start a docker container for a local development database
 
-# TO RUN ON WINDOWS: 
+# TO RUN ON WINDOWS:
 # 1. Install WSL (Windows Subsystem for Linux) - https://learn.microsoft.com/en-us/windows/wsl/install
 # 2. Install Docker Desktop for Windows - https://docs.docker.com/docker-for-windows/install/
 # 3. Open WSL - `wsl`
@@ -26,7 +26,7 @@ fi
 set -a
 source .env
 
-DB_PASSWORD=$(echo $DATABASE_URL | awk -F':' '{print $3}' | awk -F'@' '{print $1}')
+DB_PASSWORD=$(echo $POSTGRES_URL | awk -F':' '{print $3}' | awk -F'@' '{print $1}')
 
 if [ "$DB_PASSWORD" = "password" ]; then
   echo "You are using the default database password"
@@ -41,4 +41,4 @@ fi
 
 docker run --name $DB_CONTAINER_NAME -e POSTGRES_PASSWORD=$DB_PASSWORD -e POSTGRES_DB=db -d -p 5432:5432 docker.io/postgres
 
-echo "Database container was succesfuly created"
+echo "Database container was successfully created"
