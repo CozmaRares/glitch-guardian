@@ -1,7 +1,7 @@
 // Example model schema from the Drizzle docs
 // https://orm.drizzle.team/docs/sql-schema-declaration
 
-import { sql } from "drizzle-orm";
+import { relations, sql } from "drizzle-orm";
 import * as pg from "drizzle-orm/pg-core";
 
 /**
@@ -30,9 +30,32 @@ export const posts = createTable(
 
 export const users = createTable("user", {
   id: pg.text("id").primaryKey(),
-  githubID: pg.integer("github_id").notNull(),
   name: pg.varchar("name", { length: 256 }).notNull(),
 });
+
+export const providerTypeEnum = pg.pgEnum("provider_type", ["github"]);
+
+export const oauthAccounts = createTable(
+  "oauth_account",
+  {
+    providerType: providerTypeEnum("provider_type"),
+    providerUserID: pg.text("provider_user_id"),
+    userID: pg
+      .text("user_id")
+      .notNull()
+      .references(() => users.id),
+  },
+  table => ({
+    pk: pg.primaryKey({ columns: [table.providerType, table.providerUserID] }),
+  }),
+);
+
+export const oauthAccountRelations = relations(oauthAccounts, ({ one }) => ({
+  user: one(users, {
+    fields: [oauthAccounts.userID],
+    references: [users.id],
+  }),
+}));
 
 export const sessions = createTable("session", {
   id: pg.text("id").primaryKey(),

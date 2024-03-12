@@ -10,5 +10,10 @@ export default async function Layout({
 
   if (!user) return redirect("/login");
 
-  return <>{children}</>;
+  return (
+    <>
+      <div>protected</div>
+      {children}
+    </>
+  );
 }

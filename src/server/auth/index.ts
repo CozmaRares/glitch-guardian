@@ -19,7 +19,6 @@ export const lucia = new Lucia(adapter, {
   },
   getUserAttributes: userAttributes => {
     return {
-      githubID: userAttributes.githubID,
       username: userAttributes.name,
     };
   },
