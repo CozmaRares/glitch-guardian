@@ -1,4 +1,4 @@
-import { github, lucia } from "@/server/auth";
+import { discord, lucia } from "@/server/auth";
 import { cookies } from "next/headers";
 import { OAuth2RequestError } from "arctic";
 import { generateId } from "lucia";
@@ -10,7 +10,7 @@ export async function GET(request: Request): Promise<Response> {
   const url = new URL(request.url);
   const code = url.searchParams.get("code");
   const state = url.searchParams.get("state");
-  const storedState = cookies().get("github_oauth_state")?.value ?? null;
+  const storedState = cookies().get("discord_oauth_state")?.value ?? null;
 
   if (!code || !state || !storedState || state !== storedState)
     return new Response(null, {
@@ -18,21 +18,27 @@ export async function GET(request: Request): Promise<Response> {
     });
 
   try {
-    const tokens = await github.validateAuthorizationCode(code);
-    const githubUserResponse = await fetch("https://api.github.com/user", {
-      headers: {
-        Authorization: `Bearer ${tokens.accessToken}`,
+    const tokens = await discord.validateAuthorizationCode(code);
+    const discordUserResponse = await fetch(
+      "https://discord.com/api/users/@me",
+      {
+        headers: {
+          Authorization: `Bearer ${tokens.accessToken}`,
+        },
       },
-    });
-    const githubUser = (await githubUserResponse.json()) as GitHubUser;
+    );
+
+    const discordUser = (await discordUserResponse.json()) as DiscordUser;
 
     const existingUser = await db.query.oauthAccounts.findFirst({
       where: and(
-        eq(oauthAccounts.providerType, "github"),
-        eq(oauthAccounts.providerUserID, String(githubUser.id)),
+        eq(oauthAccounts.providerType, "discord"),
+        eq(oauthAccounts.providerUserID, String(discordUser.id)),
       ),
       with: { user: true },
     });
+
+    console.log("mata");
 
     if (existingUser) {
       const session = await lucia.createSession(existingUser.userID, {});
@@ -54,12 +60,12 @@ export async function GET(request: Request): Promise<Response> {
 
     await db.insert(users).values({
       id: userId,
-      name: githubUser.login,
+      name: discordUser.username,
     });
 
     await db.insert(oauthAccounts).values({
       providerType: "github",
-      providerUserID: String(githubUser.id),
+      providerUserID: String(discordUser.id),
       userID: userId,
     });
 
@@ -92,7 +98,7 @@ export async function GET(request: Request): Promise<Response> {
   }
 }
 
-interface GitHubUser {
-  id: number;
-  login: string;
+interface DiscordUser {
+  id: string;
+  username: string;
 }

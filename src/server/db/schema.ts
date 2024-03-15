@@ -45,7 +45,10 @@ export const userRelations = relations(users, ({ many }) => ({
   oauthAccounts: many(oauthAccounts),
 }));
 
-export const providerTypeEnum = pg.pgEnum("provider_type", ["github"]);
+export const providerTypeEnum = pg.pgEnum("provider_type", [
+  "github",
+  "discord",
+]);
 
 export const oauthAccounts = createTable(
   "oauth_account",
@@ -58,7 +61,9 @@ export const oauthAccounts = createTable(
       .references(() => users.id),
   },
   table => ({
-    pk: pg.primaryKey({ columns: [table.providerType, table.providerUserID] }),
+    pk: pg.primaryKey({
+      columns: [table.providerType, table.providerUserID],
+    }),
   }),
 );
 

@@ -1,5 +1,5 @@
 import { Lucia } from "lucia";
-import { GitHub } from "arctic";
+import { GitHub, Discord } from "arctic";
 import { DrizzlePostgreSQLAdapter } from "@lucia-auth/adapter-drizzle";
 import { db } from "../db";
 import { sessions, users } from "../db/schema";
@@ -31,11 +31,6 @@ declare module "lucia" {
     DatabaseUserAttributes: Omit<InferSelectModel<typeof users>, "id">;
   }
 }
-
-export const github = new GitHub(
-  env.GITHUB_CLIENT_ID,
-  env.GITHUB_CLIENT_SECRET,
-);
 
 export const validateRequest = cache(
   async (): Promise<
@@ -71,4 +66,15 @@ export const validateRequest = cache(
     } catch {}
     return result;
   },
+);
+
+export const github = new GitHub(
+  env.GITHUB_CLIENT_ID,
+  env.GITHUB_CLIENT_SECRET,
+);
+
+export const discord = new Discord(
+  env.DISCORD_CLIENT_ID,
+  env.DISCORD_CLIENT_SECRET,
+  env.DISCORD_REDIRECT_URI,
 );
