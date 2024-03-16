@@ -1,7 +1,7 @@
 import { unstable_noStore as noStore } from "next/cache";
 import Link from "next/link";
 
-import { CreatePost } from "@/app/_components/create-post";
+import CreatePost from "@/components/CreatePost";
 import { api } from "@/trpc/server";
 
 export default async function Page() {

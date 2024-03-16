@@ -2,6 +2,7 @@ import { validateRequest } from "@/server/auth";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { signup, login } from "@/server/actions/auth";
+import Form from "@/components/Form";
 
 export default async function Page() {
   const { user } = await validateRequest();
@@ -30,22 +31,7 @@ export default async function Page() {
       <div className="m-20 h-1 w-full bg-black" />
 
       <h1>Sign in</h1>
-      <form action={login}>
-        <label htmlFor="username">Username</label>
-        <input
-          name="username"
-          id="username"
-        />
-        <br />
-        <label htmlFor="password">Password</label>
-        <input
-          type="password"
-          name="password"
-          id="password"
-        />
-        <br />
-        <button>Continue</button>
-      </form>
+      <Form />
 
       <div className="m-20 h-1 w-full bg-black" />
 

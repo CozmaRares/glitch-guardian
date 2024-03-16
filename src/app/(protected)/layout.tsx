@@ -1,4 +1,5 @@
 import { validateRequest } from "@/server/auth";
+import Link from "next/link";
 import { redirect } from "next/navigation";
 
 export default async function Layout({
@@ -13,6 +14,7 @@ export default async function Layout({
   return (
     <>
       <div>protected</div>
+      <Link href="/api/auth/logout">Logout</Link>
       {children}
     </>
   );

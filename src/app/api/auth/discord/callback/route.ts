@@ -38,8 +38,6 @@ export async function GET(request: Request): Promise<Response> {
       with: { user: true },
     });
 
-    console.log("mata");
-
     if (existingUser) {
       const session = await lucia.createSession(existingUser.userID, {});
       const sessionCookie = lucia.createSessionCookie(session.id);

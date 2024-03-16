@@ -2,10 +2,9 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-
 import { api } from "@/trpc/react";
 
-export function CreatePost() {
+export default function CreatePost() {
   const router = useRouter();
   const [name, setName] = useState("");
 

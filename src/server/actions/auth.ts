@@ -8,27 +8,12 @@ import { generateId } from "lucia";
 import { db } from "../db";
 import { passwordAccounts, users } from "../db/schema";
 import { eq } from "drizzle-orm";
+import { type UserLoginSchema, userLoginValidator } from "@/lib/utils";
 
-type ActionResult = { error: string | null };
-
-export async function logout(): Promise<ActionResult> {
-  const { session } = await validateRequest();
-  if (!session) {
-    return {
-      error: "Unauthorized",
-    };
-  }
-
-  await lucia.invalidateSession(session.id);
-
-  const sessionCookie = lucia.createBlankSessionCookie();
-  cookies().set(
-    sessionCookie.name,
-    sessionCookie.value,
-    sessionCookie.attributes,
-  );
-  return redirect("/login");
-}
+type ActionResult = {
+  message: string;
+  errors?: Record<string, string[] | undefined>;
+} | null;
 
 export async function signup(formData: FormData): Promise<ActionResult> {
   const username = formData.get("username");
@@ -41,7 +26,7 @@ export async function signup(formData: FormData): Promise<ActionResult> {
     !/^[a-z0-9_-]+$/.test(username)
   ) {
     return {
-      error: "Invalid username",
+      message: "Invalid username",
     };
   }
   const password = formData.get("password");
@@ -51,7 +36,7 @@ export async function signup(formData: FormData): Promise<ActionResult> {
     password.length > 255
   ) {
     return {
-      error: "Invalid password",
+      message: "Invalid password",
     };
   }
 
@@ -78,35 +63,21 @@ export async function signup(formData: FormData): Promise<ActionResult> {
   return redirect("/");
 }
 
-export async function login(formData: FormData): Promise<ActionResult> {
-  const username = formData.get("username");
-  if (
-    typeof username !== "string" ||
-    username.length < 3 ||
-    username.length > 31 ||
-    !/^[a-z0-9_-]+$/.test(username)
-  ) {
+export async function login(data: UserLoginSchema): Promise<ActionResult> {
+  const parsedData = userLoginValidator.safeParse(data);
+
+  if (!parsedData.success)
     return {
-      error: "Invalid username",
+      message: "Invalid login credentials.",
+      errors: parsedData.error.flatten().fieldErrors,
     };
-  }
-  const password = formData.get("password");
-  if (
-    typeof password !== "string" ||
-    password.length < 6 ||
-    password.length > 255
-  ) {
-    return {
-      error: "Invalid password",
-    };
-  }
 
   const user = (
     await db
       .select({ id: users.id, hashedPassword: passwordAccounts.hashedPassword })
       .from(users)
       .innerJoin(passwordAccounts, eq(users.id, passwordAccounts.userID))
-      .where(eq(users.name, "aaaa"))
+      .where(eq(users.name, parsedData.data.username))
       .limit(1)
   )[0];
 
@@ -121,19 +92,15 @@ export async function login(formData: FormData): Promise<ActionResult> {
     // it is crucial your implementation is protected against brute-force attacks with login throttling etc.
     // If usernames are public, you may outright tell the user that the username is invalid.
     return {
-      error: "Incorrect username or password",
+      message: "Invalid login credentials.",
     };
   }
 
   const validPassword = await new Argon2id().verify(
     user.hashedPassword,
-    password,
+    parsedData.data.password,
   );
-  if (!validPassword) {
-    return {
-      error: "Incorrect username or password",
-    };
-  }
+  if (!validPassword) return { message: "Invalid login credentials." };
 
   const session = await lucia.createSession(user.id, {});
   const sessionCookie = lucia.createSessionCookie(session.id);
