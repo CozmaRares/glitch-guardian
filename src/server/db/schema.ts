@@ -37,13 +37,9 @@ export const userRoleEnum = pg.pgEnum("user_role", [
 
 export const users = createTable("user", {
   id: pg.text("id").primaryKey(),
-  name: pg.varchar("name", { length: 256 }).notNull(),
+  name: pg.varchar("name", { length: 256 }).notNull().unique(),
   role: userRoleEnum("role").default("tester"),
 });
-
-export const userRelations = relations(users, ({ many }) => ({
-  oauthAccounts: many(oauthAccounts),
-}));
 
 export const providerTypeEnum = pg.pgEnum("provider_type", [
   "github",
@@ -73,6 +69,25 @@ export const oauthAccountRelations = relations(oauthAccounts, ({ one }) => ({
     references: [users.id],
   }),
 }));
+
+export const passwordAccounts = createTable("password_account", {
+  userID: pg
+    .text("user_id")
+    .notNull()
+    .references(() => users.id)
+    .primaryKey(),
+  hashedPassword: pg.text("hashed_password").notNull(),
+});
+
+export const passwordAccountRelations = relations(
+  passwordAccounts,
+  ({ one }) => ({
+    user: one(users, {
+      fields: [passwordAccounts.userID],
+      references: [users.id],
+    }),
+  }),
+);
 
 export const sessions = createTable("session", {
   id: pg.text("id").primaryKey(),
