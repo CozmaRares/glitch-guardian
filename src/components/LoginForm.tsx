@@ -5,7 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import {
-  Form as UiForm,
+  Form,
   FormControl,
   FormDescription,
   FormField,
@@ -15,15 +15,16 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { login } from "@/server/actions/auth";
+import Link from "next/link";
+import { Eye, EyeOff } from "lucide-react";
+import { useState } from "react";
 
 async function onSubmit(values: UserLoginSchema) {
   const result = await login(values);
   console.log(result);
 }
 
-// type Props = {}
-
-export default function Form() {
+export default function LoginForm() {
   const form = useForm<UserLoginSchema>({
     resolver: zodResolver(userLoginValidator),
     defaultValues: {
@@ -32,8 +33,10 @@ export default function Form() {
     },
   });
 
+  const [isVisible, setIsVisible] = useState(false);
+
   return (
-    <UiForm {...form}>
+    <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
         className="space-y-8"
@@ -42,7 +45,7 @@ export default function Form() {
           control={form.control}
           name="username"
           render={({ field }) => (
-            <FormItem>
+            <FormItem className="relative">
               <FormLabel>Username</FormLabel>
               <FormControl>
                 <Input
@@ -53,7 +56,7 @@ export default function Form() {
               <FormDescription>
                 This is your public display name.
               </FormDescription>
-              <FormMessage />
+              <FormMessage className="absolute left-0 top-full" />
             </FormItem>
           )}
         />
@@ -61,24 +64,43 @@ export default function Form() {
           control={form.control}
           name="password"
           render={({ field }) => (
-            <FormItem>
+            <FormItem className="relative">
               <FormLabel>Password</FormLabel>
               <FormControl>
-                <Input
-                  type="password"
-                  placeholder="password"
-                  {...field}
-                />
+                <div className="relative">
+                  <Input
+                    type={isVisible ? "text" : "password"}
+                    placeholder="password"
+                    {...field}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setIsVisible(!isVisible)}
+                    className="absolute right-2 top-1/2 -translate-x-1/2 -translate-y-1/2 scale-75 cursor-pointer opacity-70 transition-opacity hover:opacity-100"
+                  >
+                    {isVisible ? <Eye /> : <EyeOff />}
+                  </button>
+                </div>
               </FormControl>
-              <FormDescription>
-                This is your public display name.
-              </FormDescription>
-              <FormMessage />
+              <FormMessage className="absolute left-0 top-full" />
             </FormItem>
           )}
         />
-        <Button type="submit">Submit</Button>
+        <div>
+          <Link
+            href="/auth/reset-password"
+            className="ml-auto block w-fit italic underline opacity-80 transition-opacity hover:opacity-100"
+          >
+            Forgot password?
+          </Link>
+          <Button
+            type="submit"
+            className="mt-3 w-full text-center"
+          >
+            Login
+          </Button>
+        </div>
       </form>
-    </UiForm>
+    </Form>
   );
 }

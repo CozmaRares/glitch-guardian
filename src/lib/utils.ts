@@ -6,7 +6,9 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-const pass = z.string().min(6);
+const pass = z
+  .string()
+  .min(6, { message: "Password must be at least 6 characters long." });
 // .refine(
 //   pass =>
 //     /[A-Z]/.test(pass) && // At least 1 uppercase letter
@@ -19,7 +21,10 @@ const pass = z.string().min(6);
 //   },
 // )
 export const userLoginValidator = z.object({
-  username: z.string().min(3).max(30),
+  username: z
+    .string()
+    .min(3, { message: "Username must be at least 6 characters long." })
+    .max(30, { message: "Username must be at most 30 characters long." }),
   password: pass,
 });
 export type UserLoginSchema = z.infer<typeof userLoginValidator>;
