@@ -38,7 +38,7 @@ export const userRoleEnum = pg.pgEnum("user_role", [
 export const users = createTable("user", {
   id: pg.text("id").primaryKey(),
   name: pg.varchar("name", { length: 256 }).notNull().unique(),
-  role: userRoleEnum("role").default("tester"),
+  role: userRoleEnum("role").notNull().default("tester"),
 });
 
 export const providerTypeEnum = pg.pgEnum("provider_type", [
@@ -49,8 +49,8 @@ export const providerTypeEnum = pg.pgEnum("provider_type", [
 export const oauthAccounts = createTable(
   "oauth_account",
   {
-    providerType: providerTypeEnum("provider_type"),
-    providerUserID: pg.text("provider_user_id"),
+    providerType: providerTypeEnum("provider_type").notNull(),
+    providerUserID: pg.text("provider_user_id").notNull(),
     userID: pg
       .text("user_id")
       .notNull()
@@ -90,7 +90,7 @@ export const passwordAccountRelations = relations(
 );
 
 export const sessions = createTable("session", {
-  id: pg.text("id").primaryKey(),
+  id: pg.text("id").notNull().primaryKey(),
   userId: pg
     .text("user_id")
     .notNull()
@@ -111,15 +111,15 @@ export const projectStatusEnum = pg.pgEnum("project_status", [
 ]);
 
 export const projects = createTable("project", {
-  id: pg.serial("id").primaryKey(),
+  id: pg.serial("id").notNull().primaryKey(),
 
-  name: pg.text("name").default(""),
-  description: pg.text("description").default(""),
+  name: pg.text("name").notNull().default(""),
+  description: pg.text("description").notNull().default(""),
 
-  startDate: pg.date("created_at").defaultNow(),
+  startDate: pg.date("created_at").notNull().defaultNow(),
   endDate: pg.timestamp("updatedAt"),
 
-  status: projectStatusEnum("status").default("active"),
+  status: projectStatusEnum("status").notNull().default("active"),
 });
 
 export const projectRelations = relations(projects, ({ many }) => ({
@@ -135,10 +135,17 @@ export const userToProjectRelationTypeEnum = pg.pgEnum(
 export const usersToProjects = createTable(
   "users_to_projects",
   {
-    projectID: pg.serial("project_id").references(() => projects.id),
-    userID: pg.text("user_id").references(() => users.id),
-    relationType:
-      userToProjectRelationTypeEnum("relation_type").default("tester"),
+    projectID: pg
+      .serial("project_id")
+      .notNull()
+      .references(() => projects.id),
+    userID: pg
+      .text("user_id")
+      .notNull()
+      .references(() => users.id),
+    relationType: userToProjectRelationTypeEnum("relation_type")
+      .notNull()
+      .default("tester"),
   },
   table => ({
     pk: pg.primaryKey({
@@ -168,22 +175,25 @@ export const bugSeverityEnum = pg.pgEnum("bug_severity", [
 ]);
 
 export const bugs = createTable("bug", {
-  id: pg.serial("id").primaryKey(),
+  id: pg.serial("id").notNull().primaryKey(),
 
   filedBy: pg
     .text("filed_by")
     .notNull()
     .references(() => users.id),
 
-  projectID: pg.serial("project_id").references(() => projects.id),
+  projectID: pg
+    .serial("project_id")
+    .notNull()
+    .references(() => projects.id),
 
-  name: pg.text("name").default(""),
-  description: pg.text("description").default(""),
+  name: pg.text("name").notNull().default(""),
+  description: pg.text("description").notNull().default(""),
 
-  severity: bugSeverityEnum("severity").default("trivial"),
+  severity: bugSeverityEnum("severity").notNull().default("trivial"),
 
-  createdAt: pg.date("created_at").defaultNow(),
-  updatedAt: pg.date("updatedAt").defaultNow(),
+  createdAt: pg.date("created_at").notNull().defaultNow(),
+  updatedAt: pg.date("updatedAt").notNull().defaultNow(),
 });
 
 export const bugRelations = relations(bugs, ({ one, many }) => ({
@@ -213,31 +223,37 @@ export const taskPriorityEnum = pg.pgEnum("task_priority", [
 ]);
 
 export const tasks = createTable("task", {
-  id: pg.serial("id").primaryKey(),
+  id: pg.serial("id").notNull().primaryKey(),
 
   createdBy: pg
     .text("created_by")
     .notNull()
     .references(() => users.id),
-  assignedTo: pg.text("assigned_to").references(() => users.id),
+  assignedTo: pg
+    .text("assigned_to")
+    .notNull()
+    .references(() => users.id),
   bugID: pg
     .serial("bug_id")
     .notNull()
     .references(() => bugs.id),
 
-  name: pg.text("name").default(""),
-  description: pg.text("description").default(""),
+  name: pg.text("name").notNull().default(""),
+  description: pg.text("description").notNull().default(""),
 
-  status: taskStatusEnum("status").default("backlog"),
-  priority: taskPriorityEnum("priority").default("undetermined"),
+  status: taskStatusEnum("status").notNull().default("backlog"),
+  priority: taskPriorityEnum("priority").notNull().default("undetermined"),
 
-  createdAt: pg.date("created_at").defaultNow(),
-  updatedAt: pg.date("updatedAt").defaultNow(),
-  dueDate: pg.date("due_date", { mode: "date" }).$defaultFn(() => {
-    const date = new Date();
-    date.setDate(date.getDate() + 30);
-    return date;
-  }),
+  createdAt: pg.date("created_at").notNull().defaultNow(),
+  updatedAt: pg.date("updatedAt").notNull().defaultNow(),
+  dueDate: pg
+    .date("due_date", { mode: "date" })
+    .notNull()
+    .$defaultFn(() => {
+      const date = new Date();
+      date.setDate(date.getDate() + 30);
+      return date;
+    }),
 });
 
 export const taskRelations = relations(tasks, ({ one }) => ({

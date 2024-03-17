@@ -1,6 +1,6 @@
 "use client";
 
-import { type UserLoginSchema, userLoginValidator } from "@/lib/utils";
+import { type UserRegisterSchema, userRegisterValidator } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
@@ -19,18 +19,18 @@ import { useState } from "react";
 import { api as trpc } from "@/trpc/react";
 import { useRouter } from "next/navigation";
 
-export default function LoginForm() {
-  const form = useForm<UserLoginSchema>({
-    resolver: zodResolver(userLoginValidator),
+export default function RegisterForm() {
+  const form = useForm<UserRegisterSchema>({
+    resolver: zodResolver(userRegisterValidator),
     defaultValues: {
       username: "",
       password: "",
+      confirm: "",
     },
   });
-
   const [isVisible, setIsVisible] = useState(false);
   const router = useRouter();
-  const loginMutation = trpc.auth.login.useMutation({
+  const registerMutation = trpc.auth.register.useMutation({
     onError(err) {
       // TODO: add toast
       console.log(err);
@@ -40,7 +40,7 @@ export default function LoginForm() {
     },
   });
 
-  const onSubmit = (data: UserLoginSchema) => loginMutation.mutate(data);
+  const onSubmit = (data: UserRegisterSchema) => registerMutation.mutate(data);
 
   return (
     <Form {...form}>
@@ -93,11 +93,37 @@ export default function LoginForm() {
             </FormItem>
           )}
         />
+        <FormField
+          control={form.control}
+          name="confirm"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Confirm Password</FormLabel>
+              <FormControl>
+                <div className="relative">
+                  <Input
+                    type={isVisible ? "text" : "password"}
+                    placeholder="password"
+                    {...field}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setIsVisible(!isVisible)}
+                    className="absolute right-2 top-1/2 -translate-x-1/2 -translate-y-1/2 scale-75 cursor-pointer opacity-70 transition-opacity hover:opacity-100"
+                  >
+                    {isVisible ? <Eye /> : <EyeOff />}
+                  </button>
+                </div>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
         <Button
           type="submit"
-          className="w-full text-center"
+          className="mt-3 w-full text-center"
         >
-          Login
+          Register
         </Button>
       </form>
     </Form>

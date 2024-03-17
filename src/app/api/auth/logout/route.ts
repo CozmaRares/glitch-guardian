@@ -13,6 +13,6 @@ export async function GET(request: Request): Promise<Response> {
       sessionCookie.attributes,
     );
   }
-  const loginUrl = new URL("/auth/login", request.url);
+  const loginUrl = new URL("/login", request.url);
   return Response.redirect(loginUrl);
 }

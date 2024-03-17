@@ -62,7 +62,7 @@ export async function GET(request: Request): Promise<Response> {
     });
 
     await db.insert(oauthAccounts).values({
-      providerType: "github",
+      providerType: "discord",
       providerUserID: String(discordUser.id),
       userID: userId,
     });
@@ -83,9 +83,7 @@ export async function GET(request: Request): Promise<Response> {
   } catch (e) {
     console.log(e);
 
-    // the specific error message depends on the provider
     if (e instanceof OAuth2RequestError) {
-      // invalid code
       return new Response(null, {
         status: 400,
       });

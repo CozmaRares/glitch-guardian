@@ -1,5 +1,4 @@
 import { validateRequest } from "@/server/auth";
-import Link from "next/link";
 import { redirect } from "next/navigation";
 
 export default async function Layout({
@@ -8,14 +7,7 @@ export default async function Layout({
   children: React.ReactNode;
 }) {
   const { user } = await validateRequest();
+  if (user) return redirect("/");
 
-  if (!user) return redirect("/login");
-
-  return (
-    <>
-      <div>protected</div>
-      <Link href="/api/auth/logout">Logout</Link>
-      {children}
-    </>
-  );
+  return <>{children}</>;
 }

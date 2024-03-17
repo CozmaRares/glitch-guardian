@@ -3,14 +3,16 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 
 type Props = {
-  provider: string;
+  redirect: string;
+  text: string;
   icon: ReactNode;
   colors: string;
   iconColor?: string;
 };
 
 export default function ProviderLogin({
-  provider,
+  redirect,
+  text,
   icon,
   colors,
   iconColor,
@@ -18,10 +20,10 @@ export default function ProviderLogin({
   return (
     <Link
       className={cn(
-        "group flex flex-row items-center justify-center gap-4 rounded-md px-4 py-2",
+        "group flex flex-row items-center justify-center gap-4 rounded-md px-4 py-2 transition-colors",
         colors,
       )}
-      href={`/api/auth/${provider.toLowerCase()}`}
+      href={redirect}
     >
       <span
         className={cn(
@@ -31,7 +33,7 @@ export default function ProviderLogin({
       >
         {icon}
       </span>
-      Continue with {provider}
+      {text}
     </Link>
   );
 }
