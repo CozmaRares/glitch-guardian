@@ -13,7 +13,7 @@ export default async function Layout({
   if (!user) return redirect("/login");
 
   return (
-    <div className="grid grid-cols-[400px,minmax(0,1fr)]">
+    <div className="grid grid-cols-[370px,minmax(0,1fr)]">
       <AsideMenu />
       {children}
     </div>
