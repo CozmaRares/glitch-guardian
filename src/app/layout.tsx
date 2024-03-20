@@ -1,8 +1,8 @@
 import "@/styles/globals.css";
 
 import { Inter } from "next/font/google";
-
 import { TRPCReactProvider } from "@/trpc/react";
+import { Toaster } from "@/components/ui/toaster";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -20,6 +20,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     <html lang="en">
       <body className={`font-sans ${inter.variable} dark`}>
         <TRPCReactProvider>{children}</TRPCReactProvider>
+        <Toaster />
       </body>
     </html>
   );

@@ -9,6 +9,14 @@ import type { Session, User } from "lucia";
 import { cache } from "react";
 import { cookies } from "next/headers";
 
+// IMPORTANT!
+declare module "lucia" {
+  interface Register {
+    Lucia: typeof lucia;
+    DatabaseUserAttributes: Omit<InferSelectModel<typeof users>, "id">;
+  }
+}
+
 const adapter = new DrizzlePostgreSQLAdapter(db, sessions, users);
 
 export const lucia = new Lucia(adapter, {
@@ -24,14 +32,6 @@ export const lucia = new Lucia(adapter, {
     };
   },
 });
-
-// IMPORTANT!
-declare module "lucia" {
-  interface Register {
-    Lucia: typeof lucia;
-    DatabaseUserAttributes: Omit<InferSelectModel<typeof users>, "id">;
-  }
-}
 
 export const validateRequest = cache(
   async (): Promise<

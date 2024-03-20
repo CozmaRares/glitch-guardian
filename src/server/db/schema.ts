@@ -1,7 +1,7 @@
 // Example model schema from the Drizzle docs
 // https://orm.drizzle.team/docs/sql-schema-declaration
 
-import { relations, sql } from "drizzle-orm";
+import { relations } from "drizzle-orm";
 import * as pg from "drizzle-orm/pg-core";
 
 /**
@@ -11,22 +11,6 @@ import * as pg from "drizzle-orm/pg-core";
  * @see https://orm.drizzle.team/docs/goodies#multi-project-schema
  */
 export const createTable = pg.pgTableCreator(name => `glitch-guardian_${name}`);
-
-export const posts = createTable(
-  "post",
-  {
-    id: pg.serial("id").primaryKey(),
-    name: pg.varchar("name", { length: 256 }),
-    createdAt: pg
-      .timestamp("created_at")
-      .default(sql`CURRENT_TIMESTAMP`)
-      .notNull(),
-    updatedAt: pg.timestamp("updatedAt"),
-  },
-  example => ({
-    nameIndex: pg.index("name_idx").on(example.name),
-  }),
-);
 
 export const userRoleEnum = pg.pgEnum("user_role", [
   "admin",

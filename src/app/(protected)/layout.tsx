@@ -1,5 +1,6 @@
+import AsideMenu from "@/components/AsideMenu";
 import { validateRequest } from "@/server/auth";
-import Link from "next/link";
+// import Link from "next/link";
 import { redirect } from "next/navigation";
 
 export default async function Layout({
@@ -12,10 +13,11 @@ export default async function Layout({
   if (!user) return redirect("/login");
 
   return (
-    <>
-      <div>protected</div>
-      <Link href="/api/auth/logout">Logout</Link>
+    <div className="grid grid-cols-[400px,minmax(0,1fr)]">
+      <AsideMenu />
       {children}
-    </>
+    </div>
   );
 }
+
+// <Link href="/api/auth/logout">Logout</Link>

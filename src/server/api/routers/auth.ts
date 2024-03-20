@@ -3,13 +3,15 @@ import { passwordAccounts, users } from "@/server/db/schema";
 import { userLoginValidator, userRegisterValidator } from "@/lib/utils";
 import { eq } from "drizzle-orm";
 import { Argon2id } from "oslo/password";
-import { lucia } from "@/server/auth";
+import { lucia, validateRequest } from "@/server/auth";
 import { cookies } from "next/headers";
 import { TRPCError } from "@trpc/server";
 import { generateId } from "lucia";
 
 export const authRouter = createTRPCRouter({
-  login: publicProcedure
+  getUserSession: publicProcedure.query(validateRequest),
+
+  passLogin: publicProcedure
     .input(userLoginValidator)
     .mutation(async ({ ctx, input }) => {
       const user = (
@@ -50,7 +52,7 @@ export const authRouter = createTRPCRouter({
       );
     }),
 
-  register: publicProcedure
+  passRegister: publicProcedure
     .input(userRegisterValidator)
     .mutation(async ({ ctx, input }) => {
       const hashedPassword = await new Argon2id().hash(input.password);

@@ -18,6 +18,7 @@ import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 import { api as trpc } from "@/trpc/react";
 import { useRouter } from "next/navigation";
+import { toast } from "./ui/use-toast";
 
 export default function RegisterForm() {
   const form = useForm<UserRegisterSchema>({
@@ -30,10 +31,13 @@ export default function RegisterForm() {
   });
   const [isVisible, setIsVisible] = useState(false);
   const router = useRouter();
-  const registerMutation = trpc.auth.register.useMutation({
+  const registerMutation = trpc.auth.passRegister.useMutation({
     onError(err) {
-      // TODO: add toast
-      console.log(err);
+      toast({
+        variant: "destructive",
+        title: "Server error",
+        description: err.message,
+      });
     },
     onSuccess() {
       router.replace("/");

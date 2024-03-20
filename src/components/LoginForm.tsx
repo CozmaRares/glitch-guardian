@@ -18,6 +18,7 @@ import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 import { api as trpc } from "@/trpc/react";
 import { useRouter } from "next/navigation";
+import { toast } from "@/components/ui/use-toast";
 
 export default function LoginForm() {
   const form = useForm<UserLoginSchema>({
@@ -30,10 +31,13 @@ export default function LoginForm() {
 
   const [isVisible, setIsVisible] = useState(false);
   const router = useRouter();
-  const loginMutation = trpc.auth.login.useMutation({
+  const loginMutation = trpc.auth.passLogin.useMutation({
     onError(err) {
-      // TODO: add toast
-      console.log(err);
+      toast({
+        variant: "destructive",
+        title: "Server error",
+        description: err.message,
+      });
     },
     onSuccess() {
       router.replace("/");
