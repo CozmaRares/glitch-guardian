@@ -11,7 +11,7 @@ const ActivePageContext = createContext<{
 type Props = { children: React.ReactNode };
 
 export default function ActivePageProvider({ children }: Props) {
-  const [activePage, setActivePage] = useState<Page>("Overview");
+  const [activePage, setActivePage] = useState<Page>("Dashboard");
 
   return (
     <ActivePageContext.Provider

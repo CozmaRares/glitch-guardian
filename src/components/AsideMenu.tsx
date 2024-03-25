@@ -3,8 +3,9 @@ import Avatar from "./utils/Avatar";
 import { type User } from "lucia";
 import { Button } from "./ui/button";
 import { Settings } from "lucide-react";
-import NavigationMenu from "./NavigationMenu";
 import ActivePageProvider from "@/context/active-page";
+import Menu from "./Menu";
+import { actionMenus, mainMenu } from "@/lib/data";
 
 export default async function AsideMenu() {
   const { user } = (await validateRequest()) as { user: User };
@@ -40,7 +41,16 @@ export default async function AsideMenu() {
       </div>
 
       <ActivePageProvider>
-        <NavigationMenu />
+        <nav>
+          <Menu
+            label="menu"
+            entries={mainMenu}
+          />
+          <Menu
+            label="actions"
+            entries={actionMenus[user.userRole]}
+          />
+        </nav>
       </ActivePageProvider>
     </aside>
   );

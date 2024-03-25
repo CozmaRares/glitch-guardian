@@ -1,7 +1,7 @@
 // Example model schema from the Drizzle docs
 // https://orm.drizzle.team/docs/sql-schema-declaration
 
-import { relations } from "drizzle-orm";
+import { type InferSelectModel, relations } from "drizzle-orm";
 import * as pg from "drizzle-orm/pg-core";
 
 /**
@@ -19,11 +19,14 @@ export const userRoleEnum = pg.pgEnum("user_role", [
   "tester",
 ]);
 
+// TODO: add email
 export const users = createTable("user", {
   id: pg.text("id").primaryKey(),
   name: pg.varchar("name", { length: 256 }).notNull().unique(),
   role: userRoleEnum("role").notNull().default("tester"),
 });
+
+export type User = InferSelectModel<typeof users>;
 
 export const providerTypeEnum = pg.pgEnum("provider_type", [
   "github",

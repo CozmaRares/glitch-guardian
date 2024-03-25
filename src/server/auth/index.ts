@@ -2,10 +2,9 @@ import { Lucia } from "lucia";
 import { GitHub, Discord } from "arctic";
 import { DrizzlePostgreSQLAdapter } from "@lucia-auth/adapter-drizzle";
 import { db } from "../db";
-import { sessions, users } from "../db/schema";
-import type { InferSelectModel } from "drizzle-orm";
+import { type User, sessions, users } from "../db/schema";
 import { env } from "@/env";
-import type { Session, User } from "lucia";
+import type { Session, User as LuciaUser } from "lucia";
 import { cache } from "react";
 import { cookies } from "next/headers";
 
@@ -13,7 +12,7 @@ import { cookies } from "next/headers";
 declare module "lucia" {
   interface Register {
     Lucia: typeof lucia;
-    DatabaseUserAttributes: Omit<InferSelectModel<typeof users>, "id">;
+    DatabaseUserAttributes: Omit<User, "id">;
   }
 }
 
@@ -35,11 +34,11 @@ export const lucia = new Lucia(adapter, {
 
 export const validateRequest = cache(
   async (): Promise<
-    { user: User; session: Session } | { user: null; session: null }
+    { user: LuciaUser; session: Session } | { user: null; session: null }
   > => {
     // TODO: remove after done
     return {
-      user: { id: "1", username: "user", userRole: "tester" },
+      user: { id: "1", username: "user", userRole: "developer" },
       session: {
         id: "2",
         expiresAt: new Date(),
