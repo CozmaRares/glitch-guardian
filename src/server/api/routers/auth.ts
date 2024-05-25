@@ -20,7 +20,7 @@ export const authRouter = createTRPCRouter({
                     })
                     .from(users)
                     .innerJoin(passwordAccounts, eq(users.id, passwordAccounts.userID))
-                    .where(eq(users.email, input.email))
+                    .where(eq(users.name, input.username))
                     .limit(1)
             )[0];
 
@@ -60,12 +60,11 @@ export const authRouter = createTRPCRouter({
                 await ctx.db.insert(users).values({
                     id: userID,
                     name: input.username,
-                    email: input.email,
                 });
             } catch {
                 throw new TRPCError({
                     code: "BAD_REQUEST",
-                    message: "Email already exists.",
+                    message: "Username already exists.",
                 });
             }
 

@@ -24,12 +24,13 @@ export default function RegisterForm() {
     const form = useForm<UserRegisterSchema>({
         resolver: zodResolver(userRegisterValidator),
         defaultValues: {
-            email: "",
             username: "",
             password: "",
             confirm: "",
         },
     });
+
+    const [isDisabled, setDisabled] = useState(false);
     const [isVisible, setIsVisible] = useState(false);
     const router = useRouter();
     const registerMutation = trpc.auth.passRegister.useMutation({
@@ -39,13 +40,17 @@ export default function RegisterForm() {
                 title: "Server error",
                 description: err.message,
             });
+            setDisabled(false);
         },
         onSuccess() {
             router.replace("/");
         },
     });
 
-    const onSubmit = (data: UserRegisterSchema) => registerMutation.mutate(data);
+    const onSubmit = (data: UserRegisterSchema) => {
+        setDisabled(true);
+        registerMutation.mutate(data);
+    }
 
     return (
         <Form {...form}>
@@ -68,22 +73,6 @@ export default function RegisterForm() {
                             <FormDescription>
                                 This is your public display name.
                             </FormDescription>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
-                <FormField
-                    control={form.control}
-                    name="email"
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>Email</FormLabel>
-                            <FormControl>
-                                <Input
-                                    placeholder="email"
-                                    {...field}
-                                />
-                            </FormControl>
                             <FormMessage />
                         </FormItem>
                     )}
@@ -141,6 +130,7 @@ export default function RegisterForm() {
                     )}
                 />
                 <Button
+                    disabled={isDisabled}
                     type="submit"
                     className="mt-3 w-full text-center"
                 >

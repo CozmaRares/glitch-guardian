@@ -19,8 +19,7 @@ export const posts = my.mysqlTable(
 
 export const users = my.mysqlTable("user", {
   id: my.varchar("id", { length: 255 }).notNull().primaryKey(),
-  name: my.varchar("name", { length: 255 }).notNull(),
-  email: my.varchar("email", { length: 255 }).notNull().unique(),
+  name: my.varchar("name", { length: 255 }).notNull().unique(),
   role: my.mysqlEnum("role", ["dev", "manager"]).notNull().default("dev"),
 });
 

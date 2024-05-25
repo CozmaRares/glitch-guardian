@@ -17,22 +17,19 @@ const pass = z
   );
 
 export const userLoginValidator = z.object({
-  email: z.string().email(),
+  username: z
+    .string()
+    .min(3, { message: "Username must be at least 3 characters long." })
+    .max(30, { message: "Username must be at most 30 characters long." })
+    .refine(username => username === username.toLowerCase(), {
+      message: "Username must only contain lowercase letters.",
+    }),
   password: pass,
 });
 export type UserLoginSchema = z.infer<typeof userLoginValidator>;
 
 export const userRegisterValidator = userLoginValidator
-  .extend({
-    username: z
-      .string()
-      .min(3, { message: "Username must be at least 3 characters long." })
-      .max(30, { message: "Username must be at most 30 characters long." })
-      .refine(username => username === username.toLowerCase(), {
-        message: "Username must only contain lowercase letters.",
-      }),
-    confirm: pass,
-  })
+  .extend({ confirm: pass })
   .refine(data => data.password === data.confirm, {
     message: "Passwords don't match.",
     path: ["confirm"],

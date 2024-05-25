@@ -24,7 +24,7 @@ export default function LoginForm() {
     const form = useForm<UserLoginSchema>({
         resolver: zodResolver(userLoginValidator),
         defaultValues: {
-            email: "",
+            username: "",
             password: "",
         },
     });
@@ -59,13 +59,13 @@ export default function LoginForm() {
             >
                 <FormField
                     control={form.control}
-                    name="email"
+                    name="username"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Email</FormLabel>
+                            <FormLabel>Username</FormLabel>
                             <FormControl>
                                 <Input
-                                    placeholder="email"
+                                    placeholder="username"
                                     {...field}
                                 />
                             </FormControl>
