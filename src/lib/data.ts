@@ -9,7 +9,7 @@ export type Page = (typeof pages)[number];
 export const priorityColors = Object.freeze({
   low: "#22c55e",
   medium: "#fb923c",
-  high: "#ef4444",
+  high: "#b91c1c",
 } as const);
 
 export const mockData = {
@@ -132,4 +132,61 @@ export const mockData = {
       high: Math.floor(Math.random() * 20),
     },
   ],
+  news: [
+    {
+      username: "aaa",
+      imageURL: null,
+      type: "task",
+      name: "hardest",
+      date: "26-05-24",
+    },
+    {
+      username: "aaa",
+      imageURL: null,
+      type: "task",
+      name: "hardest",
+      date: "26-05-24",
+    },
+    {
+      username: "aaa",
+      imageURL: null,
+      type: "task",
+      name: "hardest",
+      date: "26-05-24",
+    },
+    {
+      username: "aaa",
+      imageURL: null,
+      type: "task",
+      name: "hardest",
+      date: "26-05-24",
+    },
+    {
+      username: "aaa",
+      imageURL: null,
+      type: "project",
+      name: "lamenter",
+      date: "27-05-24",
+    },
+    {
+      username: "aaa",
+      imageURL: null,
+      type: "project",
+      name: "lamenter",
+      date: "27-05-24",
+    },
+    {
+      username: "aaa",
+      imageURL: null,
+      type: "project",
+      name: "lamenter",
+      date: "27-05-24",
+    },
+  ] satisfies Array<{
+    username: string;
+    imageURL: string | null;
+    type: "task" | "project";
+    name: string;
+    date: string;
+  }>,
 };

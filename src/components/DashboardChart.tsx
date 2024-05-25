@@ -37,9 +37,13 @@ export default function DashboardChart({ data }: Props) {
         <XAxis dataKey="name" />
         <YAxis />
 
-        {/* @ts-expect-error types mismatch */}
         <Tooltip
-          content={<CustomTooltip />}
+          content={
+            <CustomTooltip
+              active={false}
+              label={""}
+            />
+          }
           cursor={{ fill: "#7f7f7f4f" }}
         />
         <Legend />

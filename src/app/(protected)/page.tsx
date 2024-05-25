@@ -1,4 +1,5 @@
 import DashboardChart from "@/components/DashboardChart";
+import Avatar from "@/components/utils/Avatar";
 import { priorityColors, mockData } from "@/lib/data";
 import { validateRequest } from "@/server/auth";
 import Link from "next/link";
@@ -7,6 +8,11 @@ import { redirect } from "next/navigation";
 export default async function Home() {
   const { user } = await validateRequest();
   if (!user) return redirect("/login");
+
+  const news = {
+    projecs: mockData.news.filter(n => n.type == "project"),
+    tasks: mockData.news.filter(n => n.type == "task"),
+  };
 
   return (
     <main className="space-y-12 p-8">
@@ -105,9 +111,9 @@ export default async function Home() {
           <ul className="space-y-4 px-3 pb-6">
             {mockData.upcomingTasks.map(
               ({ id, name, project, due, priority }) => (
-                <li className="rounded-md p-3 hover:bg-black/60">
+                <li>
                   <Link
-                    className="flex justify-between"
+                    className="flex justify-between rounded-md p-3 transition-colors hover:bg-black/60"
                     href={`/tasks/#task-${id}`}
                   >
                     <div>
@@ -126,6 +132,46 @@ export default async function Home() {
             )}
           </ul>
         </div>
+      </div>
+      <div className="space-y-8 rounded-2xl bg-accent p-6">
+        <h4 className="mb-6 text-xl underline">New Tasks</h4>
+        <ul className="space-y-4">
+          {news.tasks.map(({ username, imageURL, name, date }) => (
+            <li className="flex flex-row items-center justify-between rounded-md bg-black/50 px-4 py-2">
+              <div className="flex flex-row items-center gap-3">
+                <Avatar
+                  size={35}
+                  username={username}
+                  imageURL={imageURL}
+                  fallbackColor="bg-slate-600"
+                />
+                <span>{username}</span>
+              </div>
+              <span>{name}</span>
+              <span>{date}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+      <div className="space-y-8 rounded-2xl bg-accent p-6">
+        <h4 className="mb-6 text-xl underline">New Projects</h4>
+        <ul className="space-y-4">
+          {news.projecs.map(({ username, imageURL, name, date }) => (
+            <li className="flex flex-row items-center justify-between rounded-md bg-black/50 px-4 py-2">
+              <div className="flex flex-row items-center gap-3">
+                <Avatar
+                  size={35}
+                  username={username}
+                  imageURL={imageURL}
+                  fallbackColor="bg-slate-600"
+                />
+                <span>{username}</span>
+              </div>
+              <span>{name}</span>
+              <span>{date}</span>
+            </li>
+          ))}
+        </ul>
       </div>
     </main>
   );

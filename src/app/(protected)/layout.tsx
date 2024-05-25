@@ -22,7 +22,7 @@ export default async function Layout({
     pages.push({ page: "Manage Projects", link: "/manage", icon: <Monitor /> });
 
   return (
-    <div className="grid max-h-screen grid-cols-[370px,minmax(0,1fr)]">
+    <div className="grid h-screen max-h-screen grid-cols-[330px,minmax(0,1fr)]">
       <AsideMenu
         username={user.name}
         imageURL={user.imageURL}

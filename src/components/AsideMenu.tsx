@@ -66,13 +66,13 @@ export default function AsideMenu({ username, imageURL, pages }: Props) {
         </div>
         <div className="flex flex-row gap-2">
           <Link
-            className="group aspect-square rounded-sm border p-1 transition-colors hover:border-primary"
+            className="group aspect-square rounded-sm border p-1 transition-colors duration-300 hover:border-primary"
             href="/api/auth/logout"
           >
             <LogOut className="transition-[rotate] duration-300 group-hover:[rotate:y_360deg]" />
           </Link>
           <Link
-            className="group aspect-square rounded-sm border p-1 transition-colors hover:border-primary"
+            className="group aspect-square rounded-sm border p-1 transition-colors duration-300 hover:border-primary"
             href="/settings"
           >
             <Settings className="transition-transform duration-300 group-hover:rotate-[360deg]" />
