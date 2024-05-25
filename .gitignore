@@ -1,7 +1,7 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # dependencies
-/node_modules
+node_modules
 /.pnp
 .pnp.js
 
@@ -41,3 +41,8 @@ yarn-error.log*
 
 # typescript
 *.tsbuildinfo
+
+# file upload micro service
+services/file-upload/private
+services/file-upload/static
+services/file-upload/test.sh
