@@ -1,26 +1,12 @@
-import { InferSelectModel, relations, sql } from "drizzle-orm";
+import { InferSelectModel, relations } from "drizzle-orm";
 import * as my from "drizzle-orm/mysql-core";
-
-export const posts = my.mysqlTable(
-  "post",
-  {
-    id: my.bigint("id", { mode: "number" }).primaryKey().autoincrement(),
-    name: my.varchar("name", { length: 256 }),
-    createdAt: my
-      .timestamp("created_at")
-      .default(sql`CURRENT_TIMESTAMP`)
-      .notNull(),
-    updatedAt: my.timestamp("updatedAt").onUpdateNow(),
-  },
-  example => ({
-    nameIndex: my.index("name_idx").on(example.name),
-  }),
-);
 
 export const users = my.mysqlTable("user", {
   id: my.varchar("id", { length: 255 }).notNull().primaryKey(),
   name: my.varchar("name", { length: 255 }).notNull().unique(),
   role: my.mysqlEnum("role", ["dev", "manager"]).notNull().default("dev"),
+
+  imageURL: my.varchar("image_url", { length: 255 }),
 });
 
 export type User = InferSelectModel<typeof users>;
@@ -32,7 +18,8 @@ export const oauthAccounts = my.mysqlTable(
       .mysqlEnum("provider_type", ["github", "discord"])
       .notNull(),
     providerUserID: my.varchar("provider_user_id", { length: 255 }).notNull(),
-    userID: my.varchar("user_id", { length: 255 })
+    userID: my
+      .varchar("user_id", { length: 255 })
       .notNull()
       .references(() => users.id),
   },
@@ -51,7 +38,8 @@ export const oauthAccountRelations = relations(oauthAccounts, ({ one }) => ({
 }));
 
 export const passwordAccounts = my.mysqlTable("password_account", {
-  userID: my.varchar("user_id", { length: 255 })
+  userID: my
+    .varchar("user_id", { length: 255 })
     .notNull()
     .references(() => users.id)
     .primaryKey(),
@@ -70,7 +58,8 @@ export const passwordAccountRelations = relations(
 
 export const sessions = my.mysqlTable("session", {
   id: my.varchar("id", { length: 255 }).primaryKey(),
-  userId: my.varchar("user_id", { length: 255 })
+  userId: my
+    .varchar("user_id", { length: 255 })
     .notNull()
     .references(() => users.id),
   expiresAt: my.datetime("expires_at").notNull(),

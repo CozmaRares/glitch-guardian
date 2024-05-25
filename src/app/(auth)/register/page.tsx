@@ -1,6 +1,6 @@
-import RegisterForm from "@/components/RegisterForm";
-import ProviderLogin from "@/components/ProviderButton";
-import { Discord, Github } from "@/components/icons";
+import RegisterForm from "@/components/forms/RegisterForm";
+import ProviderLogin from "@/components/utils/ProviderButton";
+import { Discord, Github } from "@/components/utils/icons";
 import Link from "next/link";
 
 export default async function Page() {

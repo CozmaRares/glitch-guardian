@@ -10,6 +10,7 @@ export const env = createEnv({
     DATABASE_URL: z.string().url(),
 
     FILE_UPLOAD_KEY: z.string(),
+    FILE_UPLOAD_URL: z.string().url(),
     FILE_UPLOAD_HEADER: z.string(),
 
     GITHUB_CLIENT_ID: z.string(),
@@ -43,6 +44,7 @@ export const env = createEnv({
     DATABASE_URL: process.env.DATABASE_URL,
 
     FILE_UPLOAD_KEY: process.env.FILE_UPLOAD_KEY,
+    FILE_UPLOAD_URL: process.env.FILE_UPLOAD_URL,
     FILE_UPLOAD_HEADER: process.env.FILE_UPLOAD_HEADER,
 
     GITHUB_CLIENT_ID: process.env.GITHUB_CLIENT_ID,

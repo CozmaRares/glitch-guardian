@@ -41,12 +41,8 @@ function checkPermission(permission: string) {
 const app = new Hono();
 
 app.use(logger());
-app.use(checkApiKey);
 app.use("/static/*", serveStatic({ root: "./" }));
-
-app.get("/", c => {
-  return c.text("Hello Hono!");
-});
+app.use(checkApiKey);
 
 app.post("/upload", checkPermission("upload"), async c => {
   const data = await c.req.formData();

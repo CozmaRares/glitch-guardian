@@ -2,12 +2,12 @@ import { validateRequest } from "@/server/auth";
 import { redirect } from "next/navigation";
 
 export default async function Layout({
-    children,
+  children,
 }: {
-    children: React.ReactNode;
+  children: React.ReactNode;
 }) {
-    const { user } = await validateRequest();
-    if (user) return redirect("/");
+  const { user } = await validateRequest();
+  if (user) return redirect("/");
 
-    return <>{children}</>;
+  return <>{children}</>;
 }
