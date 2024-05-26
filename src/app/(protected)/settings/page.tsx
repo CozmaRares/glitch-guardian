@@ -10,9 +10,28 @@ import {
 } from "react";
 import Avatar from "@/components/utils/Avatar";
 import { toast } from "@/components/ui/use-toast";
+import { Button } from "@/components/ui/button";
+import { useForm } from "react-hook-form";
+import { type UsernameSchema, usernameValidator } from "@/lib/zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
+import { api } from "@/trpc/react";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 
 export default function Page() {
-  return <UpdateProfileAvatar />;
+  return (
+    <main className="space-y-20 p-8">
+      <UpdateProfileAvatar />
+      <UpdateUserName />
+    </main>
+  );
 }
 
 function UpdateProfileAvatar() {
@@ -34,20 +53,21 @@ function UpdateProfileAvatar() {
     const formData = new FormData();
     formData.append("file", selectedFile);
 
-    let response;
-
     try {
-      response = await fetch("/api/file-upload", {
+      const response = await fetch("/api/file-upload", {
         method: "POST",
         body: formData,
       });
+
+      if (!response.ok) throw "";
+
+      if (response.redirected) window.location.href = response.url;
     } catch {
-      return toast({
-        description: "There was an erorr updating your file, please try again",
+      toast({
+        variant: "destructive",
+        title: "There was an erorr updating your file. Please try again later.",
       });
     }
-
-    if (response.redirected) window.location.href = response.url;
   };
 
   const handleFileChange: ChangeEventHandler<HTMLInputElement> = ({
@@ -63,27 +83,106 @@ function UpdateProfileAvatar() {
   };
 
   return (
-    <div>
-      <form onSubmit={handleSubmit}>
-        <div className="grid w-full max-w-sm items-center gap-1.5">
-          <Label htmlFor="avatar">Avatar</Label>
-          <Input
-            id="avatar"
-            type="file"
-            onChange={handleFileChange}
-          />
-        </div>
-        <button>Update</button>
+    <div className="flex flex-row gap-20">
+      <form
+        onSubmit={handleSubmit}
+        className="items-left flex w-[500px] max-w-full flex-col gap-3 rounded-2xl border p-4"
+      >
+        <Label
+          htmlFor="avatar"
+          className="ml-1 text-lg font-bold"
+        >
+          Change Avatar Image
+        </Label>
+        <Input
+          id="avatar"
+          type="file"
+          onChange={handleFileChange}
+          className="border-border"
+        />
+        <Button
+          variant="outline"
+          className="border-border"
+        >
+          Update
+        </Button>
       </form>
 
-      <div>
-        <p>Preview</p>
+      <div className="flex flex-col items-center gap-4">
+        <p className="text-xl">Preview</p>
         <Avatar
-          size={50}
+          size={100}
           username="Preview"
           imageURL={selectedImage ?? null}
         />
       </div>
     </div>
+  );
+}
+
+function UpdateUserName() {
+  const form = useForm<UsernameSchema>({
+    resolver: zodResolver(usernameValidator),
+    defaultValues: {
+      username: "",
+    },
+  });
+
+  const [isDisabled, setDisabled] = useState(false);
+  const router = useRouter();
+  const mutation = api.user.changeName.useMutation({
+    onError(err) {
+      toast({
+        variant: "destructive",
+        title: "Server error",
+        description: err.message,
+      });
+      setDisabled(false);
+    },
+    onSuccess() {
+      router.refresh();
+    },
+  });
+
+  const onSubmit = (data: UsernameSchema) => {
+    setDisabled(true);
+    mutation.mutate(data);
+  };
+
+  return (
+    <Form {...form}>
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="w-[500px] max-w-full space-y-4 rounded-2xl border p-4"
+      >
+        <FormField
+          control={form.control}
+          name="username"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className="text-lg font-bold">
+                Change Username
+              </FormLabel>
+              <FormControl>
+                <Input
+                  className="border-border"
+                  placeholder="username"
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <Button
+          disabled={isDisabled}
+          type="submit"
+          className="w-full border-border text-center"
+          variant="outline"
+        >
+          Update
+        </Button>
+      </form>
+    </Form>
   );
 }

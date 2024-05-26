@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-const pass = z
+const passwordValidator = z
   .string()
   .min(6, { message: "Password must be at least 6 characters long." })
   .refine(
@@ -15,20 +15,27 @@ const pass = z
     },
   );
 
+const usernameValidatorInternal = z
+  .string()
+  .min(3, { message: "Username must be at least 3 characters long." })
+  .max(30, { message: "Username must be at most 30 characters long." })
+  .refine(username => username === username.toLowerCase(), {
+    message: "Username must only contain lowercase letters.",
+  });
+
+export const usernameValidator = z.object({
+  username: usernameValidatorInternal,
+});
+export type UsernameSchema = z.infer<typeof usernameValidator>;
+
 export const userLoginValidator = z.object({
-  username: z
-    .string()
-    .min(3, { message: "Username must be at least 3 characters long." })
-    .max(30, { message: "Username must be at most 30 characters long." })
-    .refine(username => username === username.toLowerCase(), {
-      message: "Username must only contain lowercase letters.",
-    }),
-  password: pass,
+  username: usernameValidatorInternal,
+  password: passwordValidator,
 });
 export type UserLoginSchema = z.infer<typeof userLoginValidator>;
 
 export const userRegisterValidator = userLoginValidator
-  .extend({ confirm: pass })
+  .extend({ confirm: passwordValidator })
   .refine(data => data.password === data.confirm, {
     message: "Passwords don't match.",
     path: ["confirm"],

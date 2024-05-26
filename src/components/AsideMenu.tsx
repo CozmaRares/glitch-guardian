@@ -19,7 +19,7 @@ export default function AsideMenu({ username, imageURL, pages }: Props) {
   return (
     <aside
       key={`aside-menu-path-${pathname}`}
-      className="flex max-h-screen min-h-screen w-full max-w-full flex-col gap-16 overflow-y-scroll border-r p-4 pt-8"
+      className="flex max-h-screen min-h-screen w-full max-w-full flex-col gap-16 overflow-y-scroll border-r p-6 pt-8"
     >
       <div>
         <h2 className="text-3xl">

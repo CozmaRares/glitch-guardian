@@ -12,6 +12,7 @@ export const priorityColors = Object.freeze({
   high: "#b91c1c",
 } as const);
 
+// FIX: remove me
 export const mockData = {
   projects: 45,
   ongoingProjects: 29,

@@ -46,7 +46,7 @@ export default function Avatar({
           src={imageURL}
           alt={`@${username}`}
           onError={() => setImageError(true)}
-          className="aspect-square h-full w-full"
+          className="aspect-square h-full w-full object-cover"
           width={size}
           height={size}
         />
