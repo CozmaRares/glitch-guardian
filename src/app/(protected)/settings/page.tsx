@@ -4,9 +4,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
   type ChangeEventHandler,
-  type FormEventHandler,
   useEffect,
   useState,
+  type FormEvent,
 } from "react";
 import Avatar from "@/components/utils/Avatar";
 import { toast } from "@/components/ui/use-toast";
@@ -26,7 +26,7 @@ function UpdateProfileAvatar() {
     [selectedImage],
   );
 
-  const handleSubmit: FormEventHandler<HTMLFormElement> = async event => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     if (!selectedFile) return toast({ description: "Please select a file!" });

@@ -2,7 +2,7 @@
 
 import Avatar from "./utils/Avatar";
 import { LogOut, Settings } from "lucide-react";
-import { Page } from "@/lib/data";
+import type { Page } from "@/lib/data";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { usePathname } from "next/navigation";

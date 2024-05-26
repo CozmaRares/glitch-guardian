@@ -1,7 +1,7 @@
 import { validateRequest } from "@/server/auth";
 import { redirect } from "next/navigation";
 import AsideMenu from "@/components/AsideMenu";
-import { Page } from "@/lib/data";
+import type { Page } from "@/lib/data";
 import { LayoutDashboard, ListChecks, Monitor, Shapes } from "lucide-react";
 
 export default async function Layout({

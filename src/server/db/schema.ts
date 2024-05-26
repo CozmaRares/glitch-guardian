@@ -1,4 +1,4 @@
-import { InferSelectModel, relations } from "drizzle-orm";
+import { type InferSelectModel, relations } from "drizzle-orm";
 import * as my from "drizzle-orm/mysql-core";
 
 export const users = my.mysqlTable("user", {

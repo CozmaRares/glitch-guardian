@@ -72,15 +72,14 @@ type TooltipProps = {
 };
 
 function CustomTooltip({ active, payload, label }: TooltipProps) {
-  if (active && payload && payload.length) {
+  if (active && payload?.length) {
     return (
       <div className="rounded-md border border-white bg-black p-4">
         <h4 className="text-center text-lg font-bold underline">{label}</h4>
-
         <ul>
           {payload.map(({ name, value, fill }) => (
             <li
-              className=""
+              key={`chart-tooltip-${value}-${fill}`}
               style={{ color: fill }}
             >{`${name} : ${value}`}</li>
           ))}

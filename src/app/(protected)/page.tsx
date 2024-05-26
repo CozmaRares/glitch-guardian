@@ -111,7 +111,7 @@ export default async function Home() {
           <ul className="space-y-4 px-3 pb-6">
             {mockData.upcomingTasks.map(
               ({ id, name, project, due, priority }) => (
-                <li>
+                <li key={`upcoming-task-${id}`}>
                   <Link
                     className="flex justify-between rounded-md p-3 transition-colors hover:bg-black/60"
                     href={`/tasks/#task-${id}`}
@@ -136,8 +136,11 @@ export default async function Home() {
       <div className="space-y-8 rounded-2xl bg-accent p-6">
         <h4 className="mb-6 text-xl underline">New Tasks</h4>
         <ul className="space-y-4">
-          {news.tasks.map(({ username, imageURL, name, date }) => (
-            <li className="flex flex-row items-center justify-between rounded-md bg-black/50 px-4 py-2">
+          {news.tasks.map(({ id, username, imageURL, name, date }) => (
+            <li
+              key={`new-task-${id}`}
+              className="flex flex-row items-center justify-between rounded-md bg-black/50 px-4 py-2"
+            >
               <div className="flex flex-row items-center gap-3">
                 <Avatar
                   size={35}
@@ -156,8 +159,11 @@ export default async function Home() {
       <div className="space-y-8 rounded-2xl bg-accent p-6">
         <h4 className="mb-6 text-xl underline">New Projects</h4>
         <ul className="space-y-4">
-          {news.projecs.map(({ username, imageURL, name, date }) => (
-            <li className="flex flex-row items-center justify-between rounded-md bg-black/50 px-4 py-2">
+          {news.projecs.map(({ id, username, imageURL, name, date }) => (
+            <li
+              key={`new-project-${id}`}
+              className="flex flex-row items-center justify-between rounded-md bg-black/50 px-4 py-2"
+            >
               <div className="flex flex-row items-center gap-3">
                 <Avatar
                   size={35}

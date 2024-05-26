@@ -6,7 +6,6 @@ import { users } from "@/server/db/schema";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { eq } from "drizzle-orm";
-import { resolveNs } from "dns";
 
 export async function POST(req: NextRequest) {
   const { user } = await validateRequest();
@@ -43,18 +42,19 @@ export async function POST(req: NextRequest) {
       columns: { avatarImageID: true },
     });
 
+    await db
+      .update(users)
+      .set({ avatarImageID: json.id })
+      .where(eq(users.id, user.id));
+
+    // delete current image only after the update
     if (dbData?.avatarImageID)
-      fetch(new URL(dbData.avatarImageID, env.FILE_UPLOAD_URL), {
+      await fetch(new URL(dbData.avatarImageID, env.FILE_UPLOAD_URL), {
         method: "DELETE",
         headers: {
           [env.FILE_UPLOAD_HEADER]: env.FILE_UPLOAD_KEY,
         },
       });
-
-    await db
-      .update(users)
-      .set({ avatarImageID: json.id })
-      .where(eq(users.id, user.id));
   } catch (e) {
     console.log(e);
     return NextResponse.json(null, { status: 500 });
