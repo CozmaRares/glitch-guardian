@@ -39,7 +39,7 @@ export default function Avatar({
             fallbackColor,
           )}
         >
-          {getUsernameInitials(username)}
+          {getUsernameInitials(username).toUpperCase()}
         </span>
       ) : (
         <Image

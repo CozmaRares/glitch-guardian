@@ -44,7 +44,7 @@ app.use(logger());
 app.use("/static/*", serveStatic({ root: "./" }));
 app.use(checkApiKey);
 
-app.post("/upload", checkPermission("upload"), async c => {
+app.post("/", checkPermission("upload"), async c => {
   const data = await c.req.formData();
   const blob = data.get("file") as Blob;
   const buffer = Buffer.from(await blob.arrayBuffer());
@@ -55,7 +55,7 @@ app.post("/upload", checkPermission("upload"), async c => {
   return c.json({ id });
 });
 
-app.delete("/delete/:id", checkPermission("delete"), c => {
+app.delete("/:id", checkPermission("delete"), c => {
   const fileID = c.req.param("id");
   const filePath = path.join(STATIC_PATH, fileID);
 

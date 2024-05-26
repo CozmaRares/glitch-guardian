@@ -28,7 +28,12 @@ export const lucia = new Lucia(adapter, {
     return {
       name: userAttributes.name,
       role: userAttributes.role,
-      imageURL: userAttributes.imageURL,
+      imageURL: userAttributes.avatarImageID
+        ? new URL(
+            `static/${userAttributes.avatarImageID}`,
+            env.FILE_UPLOAD_URL,
+          ).toString()
+        : null,
     };
   },
 });

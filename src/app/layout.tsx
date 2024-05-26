@@ -19,6 +19,7 @@ export default function RootLayout({
     <html
       lang="en"
       className={`${GeistSans.variable} dark`}
+      style={{ colorScheme: "dark" }}
     >
       <body>
         <TRPCReactProvider>{children}</TRPCReactProvider>

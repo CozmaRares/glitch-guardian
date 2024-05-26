@@ -9,6 +9,16 @@ const config = {
   experimental: {
     serverComponentsExternalPackages: ["oslo"],
   },
+  images: {
+    remotePatterns: [
+      {
+        protocol: "http",
+        hostname: "localhost",
+        port: "6969",
+        pathname: "/static/**",
+      },
+    ],
+  },
 };
 
 export default config;

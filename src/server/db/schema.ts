@@ -6,7 +6,7 @@ export const users = my.mysqlTable("user", {
   name: my.varchar("name", { length: 255 }).notNull().unique(),
   role: my.mysqlEnum("role", ["dev", "manager"]).notNull().default("dev"),
 
-  imageURL: my.varchar("image_url", { length: 255 }),
+  avatarImageID: my.varchar("avatar_image_id", { length: 255 }),
 });
 
 export type User = InferSelectModel<typeof users>;
