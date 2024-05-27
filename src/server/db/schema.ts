@@ -1,5 +1,7 @@
-import { type InferSelectModel, relations } from "drizzle-orm";
+import { projectStatuses, taskPriorities, taskStatuses } from "@/lib/data";
+import { type InferSelectModel, relations, sql } from "drizzle-orm";
 import * as my from "drizzle-orm/mysql-core";
+import { generateId } from "lucia";
 
 export const users = my.mysqlTable("user", {
   id: my.varchar("id", { length: 255 }).notNull().primaryKey(),
@@ -8,8 +10,6 @@ export const users = my.mysqlTable("user", {
 
   avatarImageID: my.varchar("avatar_image_id", { length: 255 }),
 });
-
-export type User = InferSelectModel<typeof users>;
 
 export const oauthAccounts = my.mysqlTable(
   "oauth_account",
@@ -64,3 +64,115 @@ export const sessions = my.mysqlTable("session", {
     .references(() => users.id),
   expiresAt: my.datetime("expires_at").notNull(),
 });
+
+export const projects = my.mysqlTable("project", {
+  id: my
+    .varchar("id", { length: 255 })
+    .notNull()
+    .primaryKey()
+    .$default(() => generateId(50)),
+
+  managerID: my
+    .varchar("manager_id", { length: 255 })
+    .notNull()
+    .references(() => users.id),
+
+  name: my.varchar("name", { length: 255 }).notNull(),
+  description: my.varchar("description", { length: 1024 }).notNull(),
+
+  status: my.mysqlEnum("status", projectStatuses).default("backlog").notNull(),
+
+  createdAt: my
+    .datetime("createdAt", { mode: "date" })
+    .notNull()
+    .default(sql`(now())`),
+  updatedAt: my
+    .datetime("updated_at", { mode: "date" })
+    .notNull()
+    .default(sql`(now())`)
+    .$onUpdate(() => new Date()),
+});
+
+export const projectRelations = relations(projects, ({ one }) => ({
+  manager: one(users, {
+    fields: [projects.managerID],
+    references: [users.id],
+  }),
+}));
+
+export const projectsToDevs = my.mysqlTable(
+  "project_to_dev",
+  {
+    projectID: my
+      .varchar("project_id", { length: 255 })
+      .notNull()
+      .references(() => projects.id),
+    devID: my
+      .varchar("dev_id", { length: 255 })
+      .notNull()
+      .references(() => users.id),
+  },
+  t => ({
+    pk: my.primaryKey({ columns: [t.projectID, t.devID] }),
+  }),
+);
+
+export const projectToDevRelations = relations(projectsToDevs, ({ one }) => ({
+  project: one(projects, {
+    fields: [projectsToDevs.projectID],
+    references: [projects.id],
+  }),
+  dev: one(users, {
+    fields: [projectsToDevs.devID],
+    references: [users.id],
+  }),
+}));
+
+export const tasks = my.mysqlTable("task", {
+  id: my
+    .varchar("id", { length: 255 })
+    .notNull()
+    .primaryKey()
+    .$default(() => generateId(50)),
+
+  projectID: my
+    .varchar("project_id", { length: 255 })
+    .notNull()
+    .references(() => projects.id),
+
+  devID: my
+    .varchar("dev_id", { length: 255 })
+    .notNull()
+    .references(() => users.id),
+
+  name: my.varchar("name", { length: 255 }).notNull(),
+  description: my.varchar("description", { length: 1024 }).notNull(),
+
+  status: my.mysqlEnum("status", taskStatuses).default("backlog").notNull(),
+  priority: my.mysqlEnum("priority", taskPriorities).default("low").notNull(),
+
+  createdAt: my
+    .datetime("createdAt", { mode: "date" })
+    .notNull()
+    .default(sql`(now())`),
+  updatedAt: my
+    .datetime("updated_at", { mode: "date" })
+    .notNull()
+    .default(sql`(now())`)
+    .$onUpdate(() => new Date()),
+});
+
+export const taskRelations = relations(tasks, ({ one }) => ({
+  project: one(projects, {
+    fields: [tasks.projectID],
+    references: [projects.id],
+  }),
+  dev: one(users, {
+    fields: [tasks.devID],
+    references: [users.id],
+  }),
+}));
+
+export type User = InferSelectModel<typeof users>;
+export type Project = InferSelectModel<typeof projects>;
+export type Task = InferSelectModel<typeof tasks>;

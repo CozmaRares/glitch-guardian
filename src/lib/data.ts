@@ -6,7 +6,26 @@ export const pages = Object.freeze([
 ] as const);
 export type Page = (typeof pages)[number];
 
-export const priorityColors = Object.freeze({
+export const projectStatuses = Object.freeze([
+  "backlog",
+  "active",
+  "on hold",
+  "completed",
+] as const);
+
+export const taskPriorities = Object.freeze(["low", "medium", "high"] as const);
+export const taskStatuses = Object.freeze([
+  "backlog",
+  "open",
+  "in progress",
+  "in review",
+  "closed",
+] as const);
+
+export const priorityColors: Record<
+  (typeof taskPriorities)[number],
+  `#${string}`
+> = Object.freeze({
   low: "#22c55e",
   medium: "#fb923c",
   high: "#b91c1c",
