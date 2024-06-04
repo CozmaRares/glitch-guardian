@@ -7,7 +7,7 @@ export default async function Layout({
   children: React.ReactNode;
 }) {
   const { user } = await validateRequest();
-  if (user) return redirect("/");
+  if (user?.role != "dev") return redirect("/");
 
   return children;
 }

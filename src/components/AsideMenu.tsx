@@ -2,7 +2,7 @@
 
 import Avatar from "./utils/Avatar";
 import { LogOut, Settings } from "lucide-react";
-import type { Page } from "@/lib/data";
+import type { Page, UserRole } from "@/lib/data";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -10,10 +10,11 @@ import { usePathname } from "next/navigation";
 type Props = {
   username: string;
   imageURL: string | null;
+  role: UserRole;
   pages: Array<{ page: Page; link: string; icon: React.ReactNode }>;
 };
 
-export default function AsideMenu({ username, imageURL, pages }: Props) {
+export default function AsideMenu({ username, imageURL, role, pages }: Props) {
   const pathname = usePathname();
 
   return (

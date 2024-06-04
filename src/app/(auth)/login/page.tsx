@@ -9,18 +9,12 @@ export default async function Page() {
       <div className="absolute left-1/2 top-1/2 w-full max-w-[460px] -translate-x-1/2 -translate-y-1/2 space-y-6 rounded-lg border border-gray-500 bg-background p-6">
         <h1 className="text-center text-2xl underline">LOGIN</h1>
         <LoginForm />
-        <div className="flex flex-row items-center justify-between">
+        <div className="flex flex-row items-center justify-end">
           <Link
             href="/register"
             className="italic underline opacity-80 transition-opacity hover:opacity-100"
           >
             Don&apos;t have an account?
-          </Link>
-          <Link
-            href="/reset-password"
-            className="italic underline opacity-80 transition-opacity hover:opacity-100"
-          >
-            Forgot password?
           </Link>
         </div>
         <div className="flex flex-row items-center justify-center gap-5 p-4">

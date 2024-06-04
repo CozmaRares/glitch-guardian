@@ -11,7 +11,7 @@ export default async function Page() {
         <RegisterForm />
         <Link
           href="/login"
-          className="block italic underline opacity-80 transition-opacity hover:opacity-100"
+          className="ml-auto block w-fit italic underline opacity-80 transition-opacity hover:opacity-100"
         >
           Already have an account?
         </Link>

@@ -1,4 +1,9 @@
-import { projectStatuses, taskPriorities, taskStatuses } from "@/lib/data";
+import {
+  projectStatuses,
+  taskPriorities,
+  taskStatuses,
+  userRoles,
+} from "@/lib/data";
 import { type InferSelectModel, relations, sql } from "drizzle-orm";
 import * as my from "drizzle-orm/mysql-core";
 import { generateId } from "lucia";
@@ -6,7 +11,7 @@ import { generateId } from "lucia";
 export const users = my.mysqlTable("user", {
   id: my.varchar("id", { length: 255 }).notNull().primaryKey(),
   name: my.varchar("name", { length: 255 }).notNull().unique(),
-  role: my.mysqlEnum("role", ["dev", "manager"]).notNull().default("dev"),
+  role: my.mysqlEnum("role", userRoles).notNull().default("dev"),
 
   avatarImageID: my.varchar("avatar_image_id", { length: 255 }),
 });
@@ -93,11 +98,12 @@ export const projects = my.mysqlTable("project", {
     .$onUpdate(() => new Date()),
 });
 
-export const projectRelations = relations(projects, ({ one }) => ({
+export const projectRelations = relations(projects, ({ one, many }) => ({
   manager: one(users, {
     fields: [projects.managerID],
     references: [users.id],
   }),
+  projectsToDevs: many(projectsToDevs),
 }));
 
 export const projectsToDevs = my.mysqlTable(

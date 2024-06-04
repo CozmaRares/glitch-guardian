@@ -9,7 +9,7 @@ type Props<T> = {
     data: T[] | undefined;
   };
   header: React.ReactNode;
-  row: (item: T) => React.ReactNode;
+  row: (item: T, idx: number) => React.ReactNode;
   className?: string;
 };
 
@@ -29,7 +29,7 @@ export default function Grid<T>({ query, header, row, className }: Props<T>) {
   return (
     <div className={cn("grid", className)}>
       {header}
-      {items?.map(item => row(item))}
+      {items?.map((item, idx) => row(item, idx))}
     </div>
   );
 }

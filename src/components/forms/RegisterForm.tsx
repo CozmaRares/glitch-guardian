@@ -18,7 +18,7 @@ import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 import { api as trpc } from "@/trpc/react";
 import { useRouter } from "next/navigation";
-import { toast } from "@/components/ui/use-toast";
+import { mutationOptionsFactory } from "@/lib/utils";
 
 export default function RegisterForm() {
   const form = useForm<UserRegisterSchema>({
@@ -33,19 +33,14 @@ export default function RegisterForm() {
   const [isDisabled, setDisabled] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   const router = useRouter();
-  const registerMutation = trpc.auth.passRegister.useMutation({
-    onError(err) {
-      toast({
-        variant: "destructive",
-        title: "Server error",
-        description: err.message,
-      });
-      setDisabled(false);
-    },
-    onSuccess() {
-      router.replace("/");
-    },
-  });
+  const registerMutation = trpc.auth.passRegister.useMutation(
+    mutationOptionsFactory(
+      () => {
+        router.replace("/");
+      },
+      () => setDisabled(false),
+    ),
+  );
 
   const onSubmit = (data: UserRegisterSchema) => {
     setDisabled(true);

@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { taskPriorities, projectStatuses, taskStatuses } from "./data";
 
 const passwordValidator = z
   .string()
@@ -41,3 +42,19 @@ export const userRegisterValidator = userLoginValidator
     path: ["confirm"],
   });
 export type UserRegisterSchema = z.infer<typeof userRegisterValidator>;
+
+export const projectValidator = z.object({
+  name: z.string().max(255),
+  description: z.string().max(255),
+  status: z.enum(projectStatuses),
+});
+export type ProjectSchema = z.infer<typeof projectValidator>;
+
+export const taskValidator = z.object({
+  name: z.string().max(255),
+  projectID: z.string(),
+  description: z.string().max(255),
+  status: z.enum(taskStatuses),
+  priority: z.enum(taskPriorities),
+});
+export type TaskSchema = z.infer<typeof taskValidator>;

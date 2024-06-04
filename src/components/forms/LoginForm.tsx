@@ -18,6 +18,7 @@ import { useState } from "react";
 import { api as trpc } from "@/trpc/react";
 import { useRouter } from "next/navigation";
 import { toast } from "@/components/ui/use-toast";
+import { mutationOptionsFactory } from "@/lib/utils";
 
 export default function LoginForm() {
   const form = useForm<UserLoginSchema>({
@@ -31,19 +32,14 @@ export default function LoginForm() {
   const [isDisabled, setDisabled] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   const router = useRouter();
-  const loginMutation = trpc.auth.passLogin.useMutation({
-    onError(err) {
-      toast({
-        variant: "destructive",
-        title: "Server error",
-        description: err.message,
-      });
-      setDisabled(false);
-    },
-    onSuccess() {
-      router.replace("/");
-    },
-  });
+  const loginMutation = trpc.auth.passLogin.useMutation(
+    mutationOptionsFactory(
+      () => {
+        router.replace("/");
+      },
+      () => setDisabled(false),
+    ),
+  );
 
   const onSubmit = (data: UserLoginSchema) => {
     setDisabled(true);

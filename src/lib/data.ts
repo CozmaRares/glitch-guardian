@@ -2,9 +2,12 @@ export const pages = Object.freeze([
   "Dashboard",
   "Tasks",
   "Projects",
-  "Manage Projects",
+  "Manage Devs",
 ] as const);
 export type Page = (typeof pages)[number];
+
+export const userRoles = Object.freeze(["dev", "manager"] as const);
+export type UserRole = (typeof userRoles)[number];
 
 export const projectStatuses = Object.freeze([
   "backlog",

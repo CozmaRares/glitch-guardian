@@ -110,25 +110,41 @@ export default async function Home() {
           <h3 className="p-6 text-2xl underline">Upcoming Tasks</h3>
           <ul className="space-y-4 px-3 pb-6">
             {mockData.upcomingTasks.map(
-              ({ id, name, project, due, priority }) => (
-                <li key={`upcoming-task-${id}`}>
-                  <Link
-                    className="flex justify-between rounded-md p-3 transition-colors hover:bg-black/60"
-                    href={`/tasks/#task-${id}`}
-                  >
-                    <div>
-                      <h4 className="text-xl">{name}</h4>
-                      <p>{project}</p>
+              ({ id, name, project, due, priority }) =>
+                user.role == "dev" ? (
+                  <li key={`upcoming-task-${id}`}>
+                    <Link
+                      className="flex justify-between rounded-md p-3 transition-colors hover:bg-black/60"
+                      href={`/tasks/#task-${id}`}
+                    >
+                      <div>
+                        <h4 className="text-xl">{name}</h4>
+                        <p>{project}</p>
+                      </div>
+                      <div className="text-right text-lg">
+                        <p>{due}</p>
+                        <p style={{ color: priorityColors[priority] }}>
+                          {priority}
+                        </p>
+                      </div>
+                    </Link>
+                  </li>
+                ) : (
+                  <li key={`upcoming-task-${id}`}>
+                    <div className="flex justify-between rounded-md p-3">
+                      <div>
+                        <h4 className="text-xl">{name}</h4>
+                        <p>{project}</p>
+                      </div>
+                      <div className="text-right text-lg">
+                        <p>{due}</p>
+                        <p style={{ color: priorityColors[priority] }}>
+                          {priority}
+                        </p>
+                      </div>
                     </div>
-                    <div className="text-right text-lg">
-                      <p>{due}</p>
-                      <p style={{ color: priorityColors[priority] }}>
-                        {priority}
-                      </p>
-                    </div>
-                  </Link>
-                </li>
-              ),
+                  </li>
+                ),
             )}
           </ul>
         </div>
